@@ -54,7 +54,8 @@ List of image files that should be replaced with Obsidian Editor assets
 - void_icons/cubecircled.png
 - void_icons/logo_cube_noshadow.png
 - void_icons/slice_of_void.png
-- src/vs/workbench/browser/parts/editor/media/slice_of_void.png (referenced from README)
+- src/vs/workbench/browser/parts/editor/media/slice_of_void.png
+- src/vs/workbench/browser/parts/editor/media/void_cube_noshadow.png
 
 How to verify locally
 ---------------------
