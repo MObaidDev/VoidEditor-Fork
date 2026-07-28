@@ -8,31 +8,21 @@ permissions:
 
 jobs:
   generate:
-    name: Generate assets from master logo
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: rebrand/obsidian
 
-      - name: Verify master PNG exists
-        run: |
-          if [ ! -f "void_icons/obsidian-editor-logo.png" ]; then
-            echo "ERROR: Master logo was not found."
-            exit 1
-          fi
-
       - name: Install ImageMagick
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends imagemagick
+          sudo apt-get install -y imagemagick
 
-      - name: Generate Obsidian Editor image assets
+      - name: Generate branding assets
         run: |
-          set -e
-
           magick void_icons/obsidian-editor-logo.png \
             -resize 1024x1024 \
             void_icons/cubecircled.png
@@ -54,34 +44,29 @@ jobs:
             src/vs/workbench/browser/parts/editor/media/void_cube_noshadow.png
 
           magick void_icons/obsidian-editor-logo.png \
-            -resize 16x16 \
-            /tmp/icon-16.png
+            -resize 16x16 /tmp/icon16.png
 
           magick void_icons/obsidian-editor-logo.png \
-            -resize 24x24 \
-            /tmp/icon-24.png
+            -resize 24x24 /tmp/icon24.png
 
           magick void_icons/obsidian-editor-logo.png \
-            -resize 32x32 \
-            /tmp/icon-32.png
+            -resize 32x32 /tmp/icon32.png
 
           magick void_icons/obsidian-editor-logo.png \
-            -resize 48x48 \
-            /tmp/icon-48.png
+            -resize 48x48 /tmp/icon48.png
 
           magick void_icons/obsidian-editor-logo.png \
-            -resize 256x256 \
-            /tmp/icon-256.png
+            -resize 256x256 /tmp/icon256.png
 
           magick \
-            /tmp/icon-16.png \
-            /tmp/icon-24.png \
-            /tmp/icon-32.png \
-            /tmp/icon-48.png \
-            /tmp/icon-256.png \
+            /tmp/icon16.png \
+            /tmp/icon24.png \
+            /tmp/icon32.png \
+            /tmp/icon48.png \
+            /tmp/icon256.png \
             void_icons/code.ico
 
-      - name: Commit generated assets
+      - name: Commit generated files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -94,9 +79,7 @@ jobs:
             src/vs/workbench/browser/parts/editor/media/slice_of_void.png \
             src/vs/workbench/browser/parts/editor/media/void_cube_noshadow.png
 
-          if git diff --cached --quiet; then
-            echo "No asset changes to commit."
-          else
-            git commit -m "chore(branding): generate Obsidian Editor assets"
-            git push origin rebrand/obsidian
-          fi
+          git diff --cached --quiet || \
+          git commit -m "Generate Obsidian Editor branding assets"
+
+          git push origin rebrand/obsidian
